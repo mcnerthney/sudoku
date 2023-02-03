@@ -5,7 +5,7 @@
 
 Open the `terminal` window
 
-`cd ~Documents`
+`cd ~/Documents`
 
 `git clone https://github.com/mcnerthney/sudoku.git`
 
