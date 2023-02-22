@@ -1,4 +1,4 @@
-package com.example.grids.ui.theme
+package co.tapcart.sudoku.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

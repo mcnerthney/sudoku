@@ -1,4 +1,4 @@
-package com.example.grids
+package co.tapcart.sudoku
 
 import org.junit.Test
 
