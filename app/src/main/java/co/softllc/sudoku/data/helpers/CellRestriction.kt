@@ -1,7 +1,7 @@
-package co.tapcart.sudoku.data.helpers
+package co.softllc.sudoku.data.helpers
 
 import android.util.Log
-import co.tapcart.sudoku.data.state.CellValueRestriction
+import co.softllc.sudoku.data.state.CellValueRestriction
 
 object CellRestrictionHelper {
     fun indexToXY (index: Int) : Pair<Int,Int> {

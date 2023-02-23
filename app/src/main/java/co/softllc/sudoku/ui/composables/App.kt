@@ -1,4 +1,4 @@
-package co.tapcart.sudoku.ui.composables
+package co.softllc.sudoku.ui.composables
 
 import android.content.Context
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,8 +18,8 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import co.tapcart.sudoku.R
-import co.tapcart.sudoku.ui.theme.SudokuTheme
+import co.softllc.sudoku.R
+import co.softllc.sudoku.ui.theme.SudokuTheme
 
 
 @Composable

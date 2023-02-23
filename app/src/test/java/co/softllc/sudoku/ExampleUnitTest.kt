@@ -1,4 +1,4 @@
-package co.tapcart.sudoku
+package co.softllc.sudoku
 
 import org.junit.Test
 

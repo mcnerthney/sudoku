@@ -1,10 +1,10 @@
-package co.tapcart.sudoku.data.viewmodels
+package co.softllc.sudoku.data.viewmodels
 
 import androidx.lifecycle.ViewModel
-import co.tapcart.sudoku.data.helpers.CellRestrictionHelper
-import co.tapcart.sudoku.data.repositories.GamesRepository
-import co.tapcart.sudoku.data.state.CellValue
-import co.tapcart.sudoku.data.state.SudokuUIState
+import co.softllc.sudoku.data.helpers.CellRestrictionHelper
+import co.softllc.sudoku.data.repositories.GamesRepository
+import co.softllc.sudoku.data.state.CellValue
+import co.softllc.sudoku.data.state.SudokuUIState
 import java.util.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

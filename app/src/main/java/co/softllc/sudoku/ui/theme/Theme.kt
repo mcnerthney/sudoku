@@ -1,4 +1,4 @@
-package co.tapcart.sudoku.ui.theme
+package co.softllc.sudoku.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

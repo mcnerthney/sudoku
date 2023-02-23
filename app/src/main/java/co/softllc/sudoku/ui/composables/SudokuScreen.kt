@@ -1,4 +1,4 @@
-package co.tapcart.sudoku.ui.composables
+package co.softllc.sudoku.ui.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,10 +32,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import co.tapcart.sudoku.data.state.CellValue
-import co.tapcart.sudoku.data.state.SudokuUIState
-import co.tapcart.sudoku.data.viewmodels.SudokuViewModel
-import co.tapcart.sudoku.ui.theme.SudokuTheme
+import co.softllc.sudoku.data.state.CellValue
+import co.softllc.sudoku.data.state.SudokuUIState
+import co.softllc.sudoku.data.viewmodels.SudokuViewModel
+import co.softllc.sudoku.ui.theme.SudokuTheme
 import java.util.*
 
 

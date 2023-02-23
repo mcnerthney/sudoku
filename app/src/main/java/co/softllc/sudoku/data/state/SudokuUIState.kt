@@ -1,4 +1,4 @@
-package co.tapcart.sudoku.data.state
+package co.softllc.sudoku.data.state
 
 data class SudokuUIState(
     val status : String = "",
