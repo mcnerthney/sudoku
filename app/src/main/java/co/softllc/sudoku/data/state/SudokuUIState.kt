@@ -1,6 +1,9 @@
 package co.softllc.sudoku.data.state
 
+import co.softllc.sudoku.data.models.Game
+
 data class SudokuUIState(
+    val game: Game? = null,
     val status : String = "",
     val cellValues: Map<Int, CellValue> = emptyMap(),
     val currentPosition: Int = 0

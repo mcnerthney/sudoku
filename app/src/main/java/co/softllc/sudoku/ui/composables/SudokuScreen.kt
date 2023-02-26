@@ -47,13 +47,12 @@ interface GameListener {
 
 @Composable
 fun SudokuScreen(
-    navController: NavHostController,
     sudokuViewModel: SudokuViewModel = viewModel(),
 
     ) {
     val uiState by sudokuViewModel.uiState.collectAsState()
 
-    sudokuViewModel.getGame("myGame")
+    sudokuViewModel.getGame("djm")
 
     val listener = object : GameListener {
         override fun onValueChange(index: Int, value: String) {

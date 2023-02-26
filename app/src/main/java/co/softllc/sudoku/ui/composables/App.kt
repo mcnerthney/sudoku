@@ -47,7 +47,7 @@ fun App() {
             ) {
                 NavHost(navController = navController, startDestination = "sudoku") {
                     composable("sudoku") {
-                        SudokuScreen(navController)
+                        SudokuScreen()
                     }
                 }
             }
