@@ -12,7 +12,8 @@ data class SudokuUIState(
 data class CellValue(
     val index : Int,
     val value : Int = 0,
-    val restrictions: List<CellValueRestriction> = emptyList()
+    val restrictions: List<CellValueRestriction> = emptyList(),
+    val validValues: List<Int> = emptyList()
 )
 
 data class CellValueRestriction(

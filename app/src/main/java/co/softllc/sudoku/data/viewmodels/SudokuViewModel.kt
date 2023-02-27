@@ -1,12 +1,13 @@
 package co.softllc.sudoku.data.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.softllc.sudoku.data.helpers.CellRestrictionHelper
 import co.softllc.sudoku.data.repositories.GamesRepository
 import co.softllc.sudoku.data.state.CellValue
 import co.softllc.sudoku.data.state.SudokuUIState
-import java.util.*
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -17,14 +18,17 @@ class SudokuViewModel(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SudokuUIState())
+    var job : Job? = null
     val uiState: StateFlow<SudokuUIState> = _uiState
 
-    fun getGame(gameId: String) {
-        viewModelScope.launch {
-            val game = gamesRepository.getGame(gameId)
-            _uiState.update { currentUiState ->
-                val cellValues = mutableMapOf<Int, CellValue>()
-                if (currentUiState.cellValues.isEmpty()) {
+    fun setGame(gameId: String) {
+         Log.d("djm", "get game $gameId")
+         job?.cancel()
+         job = viewModelScope.launch {
+            gamesRepository.getGame(gameId).collect { game ->
+                Log.d("djm", "updated game $game")
+                _uiState.update { currentUiState ->
+                    val cellValues = mutableMapOf<Int, CellValue>()
                     val cells = game.start
                     cells.forEachIndexed { index, value ->
                         val restrictions = listOf(
@@ -34,11 +38,27 @@ class SudokuViewModel(
                         )
                         cellValues[index] = CellValue(index, value, restrictions)
                     }
+
+                    //}
+                    val c2 = cellValues.map { mapEntry ->
+                        val usedValues = mutableSetOf<Int>()
+                        mapEntry.value.restrictions.forEach {
+                            it.associatedIndex.forEach { index ->
+                                usedValues.add(
+                                    cellValues[index]!!.value
+                                )
+                            }
+                        }
+                        val remainingValues =
+                            allValues.mapNotNull { if (usedValues.contains(it)) null else it }
+                        mapEntry.value.copy(validValues = remainingValues)
+                    }.associateBy { it.index }
+
+                    currentUiState.copy(
+                        game = game,
+                        cellValues = c2
+                    )
                 }
-                currentUiState.copy(
-                    game = game,
-                    cellValues = cellValues
-                )
             }
         }
     }
@@ -53,58 +73,45 @@ class SudokuViewModel(
     }
 
     fun setValue(index: Int, valueInput: String) {
-        _uiState.update { currentUiState ->
+        //_uiState.update { currentUiState ->
             val valueInt = valueInput.toIntOrNull()
             val value = (valueInt ?: 0) % 10
             val pos = index
-            val cell = currentUiState.cellValues[pos]!!
+            val cell = uiState.value.cellValues[pos]!!
             val usedValues = mutableSetOf<Int>()
             cell.restrictions.forEach {
                 it.associatedIndex.forEach { index ->
                     usedValues.add(
-                        currentUiState.cellValues[index]!!.value
+                        uiState.value.cellValues[index]!!.value
                     )
                 }
             }
             val remainingValues = allValues.mapNotNull { if (usedValues.contains(it)) null else it }
             if (remainingValues.contains(value)) {
-                setCellValue(currentUiState, index, value, "")
+                setCellValue(uiState.value, index, value, "")
             } else {
-                setCellValue(currentUiState, index, 0, "\n$valueInput invalid")
+                setCellValue(uiState.value, index, 0, "\n$valueInput invalid")
             }
 
         }
-        saveGame()
-    }
+      //  saveStart()
 
-    fun saveGame() {
-        val theGame = uiState.value.game ?: return
-
+    private fun setCellValue(uiState: SudokuUIState, index: Int, value: Int, note: String) {
+        val updatedCells = uiState.cellValues.toMutableMap().apply {
+            this[index] = this[index]!!.copy(value = value)
+        }
         viewModelScope.launch {
             gamesRepository.saveGame(
-                theGame.copy(
-                    start = uiState.value.cellValues.map { it.value.value }
+                uiState.game!!.copy(
+                    start = updatedCells.map { it.value.value }
                 )
             )
         }
     }
-    private fun setCellValue(uiState: SudokuUIState, index: Int, value: Int, note: String) : SudokuUIState {
-        val updatedCells = uiState.cellValues.toMutableMap().apply {
-            this[index] = this[index]!!.copy(value = value)
-        }
-        return uiState.copy(
-            cellValues = updatedCells,
-            status = buildStatus(index, uiState)
-        )
-
-    }
     private val allValues = (1..9).toList()
     private fun buildStatus(pos: Int, uiState: SudokuUIState, note: String = ""): String {
         val cell = uiState.cellValues[pos]!!
-        val usedValues = mutableSetOf<Int>()
-        cell.restrictions.forEach { it.associatedIndex.forEach { index -> usedValues.add(uiState.cellValues[index]!!.value) } }
-        val remainingValues = allValues.mapNotNull { if (usedValues.contains(it)) null else it }
-        return "Valid Values $remainingValues $note"
+        return "Valid Values ${cell.validValues} $note"
     }
 
 }

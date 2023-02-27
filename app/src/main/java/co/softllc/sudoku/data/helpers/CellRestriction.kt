@@ -4,7 +4,7 @@ import android.util.Log
 import co.softllc.sudoku.data.state.CellValueRestriction
 
 object CellRestrictionHelper {
-    fun indexToXY (index: Int) : Pair<Int,Int> {
+    private fun indexToXY (index: Int) : Pair<Int,Int> {
         val x = index / 9
         val y = index % 9
         return Pair(x,y)

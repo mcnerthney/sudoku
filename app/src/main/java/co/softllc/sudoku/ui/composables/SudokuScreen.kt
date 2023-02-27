@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import co.softllc.sudoku.data.state.CellValue
 import co.softllc.sudoku.data.state.SudokuUIState
 import co.softllc.sudoku.data.viewmodels.SudokuViewModel
@@ -47,12 +47,13 @@ interface GameListener {
 
 @Composable
 fun SudokuScreen(
+    gameId: String,
+    navController: NavController,
     sudokuViewModel: SudokuViewModel = viewModel(),
-
     ) {
     val uiState by sudokuViewModel.uiState.collectAsState()
 
-    sudokuViewModel.getGame("djm")
+    sudokuViewModel.setGame(gameId)
 
     val listener = object : GameListener {
         override fun onValueChange(index: Int, value: String) {
@@ -64,6 +65,7 @@ fun SudokuScreen(
         }
     }
 
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
@@ -73,7 +75,8 @@ fun SudokuScreen(
                 Text(
                     text = uiState.status,
                     modifier = Modifier
-                        .padding(10.dp)
+                        .padding(10.dp),
+                    fontSize = 24.sp
                 )
             }
             Row {
@@ -81,7 +84,6 @@ fun SudokuScreen(
             }
         }
     }
-
 }
 
 @Composable
@@ -127,7 +129,7 @@ fun Game(uiState: SudokuUIState, gameListener: GameListener) {
 @Composable
 fun GameCell(cellSize: Dp, uiState: SudokuUIState, index: Int, gameListener: GameListener) {
 
-    val cellValue = uiState.cellValues[index]!!
+    val cellValue = uiState.cellValues[index] ?: return
 
     fun associated(index: Int, cell: CellValue): Boolean {
         cell.restrictions.forEach { rest ->
@@ -146,12 +148,20 @@ fun GameCell(cellSize: Dp, uiState: SudokuUIState, index: Int, gameListener: Gam
             .width(cellSize)
             .height(cellSize)
             .background(
-                if (uiState.currentPosition == index)
-                    Color.Red else {
-                    if (associated(index, focusCell)) {
-                        Color.White
-                    } else {
-                        Color.LightGray
+                if ( cellValue.validValues.isEmpty()) {
+                    Color.Yellow
+                }
+                else {
+                    if (uiState.currentPosition == index) {
+                        Color.Red
+                    }
+                    else {
+                        if (associated(index, focusCell)) {
+                                Color.White
+                        }
+                        else {
+                            Color.LightGray
+                        }
                     }
                 }
             )
