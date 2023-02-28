@@ -5,8 +5,9 @@ import co.softllc.sudoku.data.models.Game
 data class SudokuUIState(
     val game: Game? = null,
     val status : String = "",
+    val note : String = "",
     val cellValues: Map<Int, CellValue> = emptyMap(),
-    val currentPosition: Int = 0
+    val currentPosition: Int? = null
 )
 
 data class CellValue(

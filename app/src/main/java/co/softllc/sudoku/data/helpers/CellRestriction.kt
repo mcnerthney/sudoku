@@ -1,6 +1,5 @@
 package co.softllc.sudoku.data.helpers
 
-import android.util.Log
 import co.softllc.sudoku.data.state.CellValueRestriction
 
 object CellRestrictionHelper {
@@ -55,3 +54,4 @@ object CellRestrictionHelper {
     }
 
 }
+

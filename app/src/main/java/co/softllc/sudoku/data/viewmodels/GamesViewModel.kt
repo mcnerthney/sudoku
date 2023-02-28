@@ -18,19 +18,21 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class GamesViewModel(
-    gamesRepository: GamesRepository = GamesRepository()
+    private val gamesRepository: GamesRepository = GamesRepository()
 ) : ViewModel() {
     val games : Flow<GamesUIState> = gamesRepository.getGames().map {
-        if ( it.isEmpty() ) {
-            gamesRepository.saveGame(
-                Game(
-                    UUID.randomUUID().toString(),
-                    "New Game",
-                    Collections.nCopies(81, 0)
-                )
-            )
-        }
         GamesUIState(it.map { Game(it.id, it.name ,it.start)})
+    }
+
+    fun newGame() : String {
+        val game = Game(
+            UUID.randomUUID().toString(),
+            "New Game",
+            Collections.nCopies(81, 0))
+        viewModelScope.launch {
+            gamesRepository.saveGame(game)
+        }
+        return game.id
     }
 }
 

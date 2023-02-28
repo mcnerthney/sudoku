@@ -5,6 +5,7 @@ import co.softllc.sudoku.data.db.GameRoomDatabase
 import co.softllc.sudoku.data.models.Game
 import co.softllc.sudoku.data.db.GameEntity
 import java.util.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
 
@@ -13,11 +14,11 @@ class GamesRepository()
 {
     private val db = GameRoomDatabase.getDatabase()
 
-    fun getGame(id: String): Flow<Game> {
+    fun getGame(id: String): Flow<Game?> {
         return db.gameDao().getGameById(id).mapNotNull {
             it?.let {
                 Game(it.id, it.name, it.start)
-            } ?: Game(id, "untiled", Collections.nCopies(81, 0))
+            }
         }
     }
 
@@ -32,5 +33,8 @@ class GamesRepository()
         }
     }
 
+    suspend fun deleteGame(gameId: String) {
+        db.gameDao().delete(gameId)
+    }
 
 }

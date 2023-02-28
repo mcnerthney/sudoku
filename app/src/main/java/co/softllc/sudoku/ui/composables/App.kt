@@ -25,6 +25,9 @@ import androidx.navigation.compose.rememberNavController
 import co.softllc.sudoku.R
 import co.softllc.sudoku.ui.theme.SudokuTheme
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.FabPosition
+import androidx.compose.material.FloatingActionButton
+import java.util.*
 
 
 @Composable
@@ -36,7 +39,7 @@ fun App() {
 
         Scaffold(
             topBar = {
-                TopAppBar {
+                TopAppBar{
                     Text(
                         stringResource(R.string.app_name),
                         modifier = Modifier
@@ -45,15 +48,15 @@ fun App() {
                     )
                 }
             }
-        ) {
+        ) { padding ->
             Surface(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().padding(padding),
                 color = MaterialTheme.colors.background
             ) {
                 NavHost(navController = navController, startDestination = "home") {
                     composable("sudoku/{id}") {backStackEntry ->
                         val gameId = backStackEntry.arguments?.getString("id") ?: "djm"
-                        SudokuScreen(gameId, navController)
+                        SudokuScreen(navController,gameId)
                     }
                     composable("home") {
                         GamesScreen(navController)
