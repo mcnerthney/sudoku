@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -52,7 +50,6 @@ import co.softllc.sudoku.data.viewmodels.SudokuViewModel
 import co.softllc.sudoku.ui.theme.SudokuTheme
 import java.util.*
 
-
 interface GameListener {
     fun onValueChange(index: Int, value: String)
     fun onFocus(index: Int)
@@ -60,7 +57,6 @@ interface GameListener {
 
     fun onDeleteGame()
 }
-
 
 @Composable
 fun SudokuScreen(
@@ -94,8 +90,7 @@ fun SudokuScreen(
 
 @Composable
 fun GameBoard(uiState: SudokuUIState, listener: GameListener) {
-
-    val openDeleteDialog = remember { mutableStateOf(false)  }
+    val openDeleteDialog = remember { mutableStateOf(false) }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -114,7 +109,7 @@ fun GameBoard(uiState: SudokuUIState, listener: GameListener) {
                 if (uiState.cellValues.isNotEmpty()) Game(uiState, listener)
             }
             Row {
-                val name : String = uiState.game?.name.orEmpty()
+                val name: String = uiState.game?.name.orEmpty()
                 BasicTextField(
                     value = name,
                     onValueChange = {
@@ -123,7 +118,7 @@ fun GameBoard(uiState: SudokuUIState, listener: GameListener) {
                     modifier = Modifier
                         .padding(10.dp),
                     textStyle = TextStyle.Default.copy(
-                        fontSize = 26.sp,
+                        fontSize = 26.sp
                     )
                 )
             }
@@ -131,14 +126,15 @@ fun GameBoard(uiState: SudokuUIState, listener: GameListener) {
                 IconButton(
                     onClick = {
                         openDeleteDialog.value = true
-                    }) {
+                    }
+                ) {
                     Icon(Icons.Rounded.Delete, "Remove Game")
                 }
             }
         }
     }
 
-    if ( openDeleteDialog.value ) {
+    if (openDeleteDialog.value) {
         AlertDialog(
             onDismissRequest = {
                 openDeleteDialog.value = false
@@ -153,7 +149,8 @@ fun GameBoard(uiState: SudokuUIState, listener: GameListener) {
                 Button(
                     onClick = {
                         listener.onDeleteGame()
-                    }) {
+                    }
+                ) {
                     Text("DELETE")
                 }
             }
@@ -163,50 +160,49 @@ fun GameBoard(uiState: SudokuUIState, listener: GameListener) {
 
 @Composable
 fun Game(uiState: SudokuUIState, gameListener: GameListener) {
-
     val configuration = LocalConfiguration.current
     val gameWidth = configuration.screenWidthDp.dp
     val cellSize = gameWidth / 9
 
     Log.d("djm", "Current Position ${uiState.currentPosition}")
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Divider(color = MaterialTheme.colors.primary, thickness = 5.dp)
-            for (x in 1..9) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    for (y in 1..9) {
-                        val index = (x - 1) * 9 + (y - 1)
-                        GameCell(cellSize, uiState, index, gameListener)
-                        if ( y / 3 * 3 == y) {
-                            Divider(color = MaterialTheme.colors.primary,
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Divider(color = MaterialTheme.colors.primary, thickness = 5.dp)
+        for (x in 1..9) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                for (y in 1..9) {
+                    val index = (x - 1) * 9 + (y - 1)
+                    GameCell(cellSize, uiState, index, gameListener)
+                    if (y / 3 * 3 == y) {
+                        Divider(
+                            color = MaterialTheme.colors.primary,
                             modifier = Modifier
                                 .height(cellSize)
                                 .width(5.dp)
-                            )
-                        }
-                    }
-                }
-                if ( x / 3 * 3 == x ) {
-                    Divider(color = MaterialTheme.colors.primary, thickness = 5.dp)
-                }
-            }
-        }
-        Column {
-            for (x in 1..3) {
-                Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-                    for (y in 1..3) {
-                        Box(
-                            modifier = Modifier
-                                .width(cellSize * 3)
-                                .height(cellSize * 3)
-                                .border(2.dp, MaterialTheme.colors.primary)
                         )
                     }
                 }
             }
+            if (x / 3 * 3 == x) {
+                Divider(color = MaterialTheme.colors.primary, thickness = 5.dp)
+            }
         }
-
+    }
+    Column {
+        for (x in 1..3) {
+            Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                for (y in 1..3) {
+                    Box(
+                        modifier = Modifier
+                            .width(cellSize * 3)
+                            .height(cellSize * 3)
+                            .border(2.dp, MaterialTheme.colors.primary)
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -216,7 +212,6 @@ fun GameCell(
     index: Int,
     gameListener: GameListener
 ) {
-
     val cellValue = uiState.cellValues[index] ?: return
 
     fun associated(index: Int, cell: CellValue?): Boolean {
@@ -274,8 +269,9 @@ fun GameCell(
             textStyle = TextStyle(
                 textAlign = TextAlign.Center,
                 fontSize =
-                if (uiState.currentPosition == index)
-                    26.sp else {
+                if (uiState.currentPosition == index) {
+                    26.sp
+                } else {
                     if (associated(index, focusCell)) {
                         24.sp
                     } else {
@@ -293,15 +289,16 @@ fun DefaultSudokuPreview() {
     val game = Game(
         UUID.randomUUID().toString(),
         "New Game",
-        Collections.nCopies(81, 3))
+        Collections.nCopies(81, 3)
+    )
 
     val uiState = SudokuUIState(
         game,
         "status",
         "note",
         CellValueBuilder.fromGame(game).associateBy { it.index },
-        10)
-
+        10
+    )
 
     val listener = object : GameListener {
         override fun onValueChange(index: Int, value: String) {
@@ -318,4 +315,3 @@ fun DefaultSudokuPreview() {
         GameBoard(uiState = uiState, listener = listener)
     }
 }
-

@@ -1,17 +1,13 @@
 package co.softllc.sudoku.data.repositories
 
-import android.content.Context
+import co.softllc.sudoku.data.db.GameEntity
 import co.softllc.sudoku.data.db.GameRoomDatabase
 import co.softllc.sudoku.data.models.Game
-import co.softllc.sudoku.data.db.GameEntity
-import java.util.*
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
+import java.util.*
 
-
-class GamesRepository()
-{
+class GamesRepository() {
     private val db = GameRoomDatabase.getDatabase()
 
     fun getGame(id: String): Flow<Game?> {
@@ -23,7 +19,7 @@ class GamesRepository()
     }
 
     suspend fun saveGame(game: Game) {
-        val saveGame = GameEntity(game.id,  game.start, game.name)
+        val saveGame = GameEntity(game.id, game.start, game.name)
         db.gameDao().insert(saveGame)
     }
 
@@ -36,5 +32,4 @@ class GamesRepository()
     suspend fun deleteGame(gameId: String) {
         db.gameDao().delete(gameId)
     }
-
 }

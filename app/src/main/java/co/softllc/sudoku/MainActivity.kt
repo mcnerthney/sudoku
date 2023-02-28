@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.datastore.preferences.preferencesDataStore
 import co.softllc.sudoku.data.db.GameRoomDatabase
-import co.softllc.sudoku.data.repositories.GamesRepository
 import co.softllc.sudoku.ui.composables.App
 
 private const val USER_PREFERENCES_NAME = "user_preferences"
@@ -16,7 +15,6 @@ private val Context.dataStore by preferencesDataStore(
 )
 class MainActivity() : ComponentActivity() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         GameRoomDatabase.getDatabase(this)
@@ -25,5 +23,3 @@ class MainActivity() : ComponentActivity() {
         }
     }
 }
-
-

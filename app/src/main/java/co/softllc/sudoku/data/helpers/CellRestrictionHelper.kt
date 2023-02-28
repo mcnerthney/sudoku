@@ -3,17 +3,17 @@ package co.softllc.sudoku.data.helpers
 import co.softllc.sudoku.data.state.CellValueRestriction
 
 object CellRestrictionHelper {
-    private fun indexToXY (index: Int) : Pair<Int,Int> {
+    private fun indexToXY(index: Int): Pair<Int, Int> {
         val x = index / 9
         val y = index % 9
-        return Pair(x,y)
+        return Pair(x, y)
     }
     fun getRowRestriction(index: Int): CellValueRestriction {
         val xy = indexToXY(index)
         val values = mutableListOf<Int>()
         for (y in 0..8) {
             val i = xy.first * 9 + y
-            if ( i != index ) values.add(i)
+            if (i != index) values.add(i)
         }
         return CellValueRestriction(values)
     }
@@ -22,16 +22,15 @@ object CellRestrictionHelper {
         val values = mutableListOf<Int>()
         for (x in 0..8) {
             val i = x * 9 + xy.second
-            if ( i != index ) values.add(i)
+            if (i != index) values.add(i)
         }
         return CellValueRestriction(values)
     }
 
     fun getSectionRestriction(index: Int): CellValueRestriction {
         val section = sectionsIndex.find { it.contains(index) }!!
-        return CellValueRestriction(section.mapNotNull { if ( it != index ) it else null })
+        return CellValueRestriction(section.mapNotNull { if (it != index) it else null })
     }
-
 
     private val sectionsIndex = buildSections()
 
@@ -52,6 +51,4 @@ object CellRestrictionHelper {
             it.map { it + offset }.toSet()
         }
     }
-
 }
-
