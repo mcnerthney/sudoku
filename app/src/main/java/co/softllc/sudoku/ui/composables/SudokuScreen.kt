@@ -7,12 +7,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
@@ -54,7 +55,6 @@ interface GameListener {
     fun onValueChange(index: Int, value: String)
     fun onFocus(index: Int)
     fun onNameChange(value: String)
-
     fun onDeleteGame()
 }
 
@@ -82,7 +82,9 @@ fun SudokuScreen(
         }
 
         override fun onDeleteGame() {
-            sudokuViewModel.deleteGame(navController)
+            sudokuViewModel.deleteGame {
+                navController.popBackStack()
+            }
         }
     }
     GameBoard(uiState = uiState, listener = listener)
@@ -93,21 +95,12 @@ fun GameBoard(uiState: SudokuUIState, listener: GameListener) {
     val openDeleteDialog = remember { mutableStateOf(false) }
 
     Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
+        // color = MaterialTheme.colors.background
     ) {
-        Column(horizontalAlignment = Alignment.Start) {
-            Row {
-                Text(
-                    text = uiState.status + uiState.note,
-                    modifier = Modifier
-                        .padding(10.dp),
-                    fontSize = 24.sp
-                )
-            }
-            Row {
-                if (uiState.cellValues.isNotEmpty()) Game(uiState, listener)
-            }
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier.verticalScroll(rememberScrollState())
+        ) {
             Row {
                 val name: String = uiState.game?.name.orEmpty()
                 BasicTextField(
@@ -121,15 +114,31 @@ fun GameBoard(uiState: SudokuUIState, listener: GameListener) {
                         fontSize = 26.sp
                     )
                 )
-            }
-            Row {
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically),
+                    text = uiState.game?.id?.takeLast(4).orEmpty()
+                )
                 IconButton(
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically),
                     onClick = {
                         openDeleteDialog.value = true
                     }
                 ) {
                     Icon(Icons.Rounded.Delete, "Remove Game")
                 }
+            }
+            Row {
+                if (uiState.cellValues.isNotEmpty()) Game(uiState, listener)
+            }
+            Row {
+                Text(
+                    text = uiState.status + uiState.note,
+                    modifier = Modifier
+                        .padding(10.dp),
+                    fontSize = 24.sp
+                )
             }
         }
     }
@@ -296,7 +305,7 @@ fun DefaultSudokuPreview() {
         game,
         "status",
         "note",
-        CellValueBuilder.fromGame(game).associateBy { it.index },
+        CellValueBuilder.fromGame(game),
         10
     )
 

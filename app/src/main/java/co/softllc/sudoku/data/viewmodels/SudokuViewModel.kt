@@ -3,7 +3,6 @@ package co.softllc.sudoku.data.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import co.softllc.sudoku.data.helpers.CellValueBuilder
 import co.softllc.sudoku.data.repositories.GamesRepository
 import co.softllc.sudoku.data.state.SudokuUIState
@@ -41,7 +40,7 @@ class SudokuViewModel(
                 _uiState.update { currentUiState ->
                     val cellValueMap =
                         game?.let {
-                            CellValueBuilder.fromGame(game).associateBy { it.index }
+                            CellValueBuilder.fromGame(game)
                         }.orEmpty()
 
                     currentUiState.copy(
@@ -119,10 +118,10 @@ class SudokuViewModel(
         return "Valid Values ${cell.validValues} $note"
     }
 
-    fun deleteGame(navController: NavController) {
+    fun deleteGame(onDelete: () -> Unit) {
         viewModelScope.launch {
             gamesRepository.deleteGame(gameId)
-            navController.popBackStack()
+            onDelete.invoke()
         }
     }
 }

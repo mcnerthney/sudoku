@@ -3,6 +3,7 @@ package co.softllc.sudoku.ui.composables
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -35,8 +36,9 @@ fun GamesScreen(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                val gameId = gamesViewModel.newGame()
-                navController.navigate("sudoku/$gameId")
+                gamesViewModel.newGame { gameId ->
+                    navController.navigate("sudoku/$gameId")
+                }
             }) {
                 Icon(Icons.Filled.Add, "Create New Game")
             }
@@ -61,6 +63,7 @@ fun GameRow(
 ) {
     Row(
         modifier = Modifier
+            .fillMaxWidth()
             .clickable {
                 navController.navigate("sudoku/${game.id}")
             }

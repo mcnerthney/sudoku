@@ -4,7 +4,7 @@ import co.softllc.sudoku.data.models.Game
 import co.softllc.sudoku.data.state.CellValue
 
 object CellValueBuilder {
-    fun fromGame(game: Game): List<CellValue> {
+    fun fromGame(game: Game): Map<Int, CellValue> {
         val allValues = (1..9).toList()
         val cellValues = mutableMapOf<Int, CellValue>()
         val cells = game.start
@@ -29,6 +29,6 @@ object CellValueBuilder {
             val remainingValues =
                 allValues.mapNotNull { if (usedValues.contains(it)) null else it }
             mapEntry.value.copy(validValues = remainingValues)
-        }
+        }.associateBy { it.index }
     }
 }

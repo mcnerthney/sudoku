@@ -13,11 +13,11 @@ import java.util.*
 class GamesViewModel(
     private val gamesRepository: GamesRepository = GamesRepository()
 ) : ViewModel() {
-    val games: Flow<GamesUIState> = gamesRepository.getGames().map {
-        GamesUIState(it.map { Game(it.id, it.name, it.start) })
+    val games: Flow<GamesUIState> = gamesRepository.getGames().map { games ->
+        GamesUIState(games.map { Game(it.id, it.name, it.start) }.sortedBy { it.name.lowercase() })
     }
 
-    fun newGame(): String {
+    fun newGame(onCreated: ((gameId: String) -> Unit)? = null): String {
         val game = Game(
             UUID.randomUUID().toString(),
             "New Game",
@@ -25,6 +25,7 @@ class GamesViewModel(
         )
         viewModelScope.launch {
             gamesRepository.saveGame(game)
+            onCreated?.invoke(game.id)
         }
         return game.id
     }
